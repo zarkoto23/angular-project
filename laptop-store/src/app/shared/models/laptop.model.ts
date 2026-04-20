@@ -8,6 +8,7 @@ export interface Laptop{
     ram:string
     storage:string
     displaySize:number
+    operatingSystem:string
     description:string
     likedBy:string[]
     ownerId:string
