@@ -1,6 +1,10 @@
 export interface User{
     _id:string
     email:string
-    password:string
-    accessToken:string
+    username:string
+    created_at: string;
+    updatedAt: string;
+
+    liked:string[]
+    created:string[]
 }
