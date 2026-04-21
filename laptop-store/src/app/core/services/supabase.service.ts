@@ -74,25 +74,27 @@ export class SupabaseService {
     );
   }
 
-
-  logout():Observable<void>{
-    const promise=this.supabase.auth.signOut()
+  logout(): Observable<void> {
+    const promise = this.supabase.auth.signOut();
 
     return from(promise).pipe(
-      map(()=>undefined),
-      catchError(()=>of(undefined))
-      )
-    }
+      map(() => undefined),
+      catchError(() => of(undefined)),
+    );
+  }
 
-    getCurrentUser():Observable<AppUser|null>{
-      const promise=this.supabase.auth.getUser()
+  getCurrentUser(): Observable<AppUser | null> {
+    const promise = this.supabase.auth.getUser();
 
-      return from(promise).pipe(
-        map(({data})=>this.toAppUser(data.user))
-      )
-    }
+    return from(promise).pipe(map(({ data }) => this.toAppUser(data.user)));
+  }
 
-    getSupabaseClient(): SupabaseClient {
+  // supabaseAuth.service.ts
+  getCurrentUserValue(): AppUser | null {
+    return this.currentUsrSubject.getValue();
+  }
+
+  getSupabaseClient(): SupabaseClient {
     return this.supabase;
   }
 }

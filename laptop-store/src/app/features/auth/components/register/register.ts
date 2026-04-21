@@ -2,7 +2,7 @@
 import { Component, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { SupabaseService } from '../../../../core/services/supabaseAuth.service'; 
+import { SupabaseService } from '../../../../core/services/supabase.service'; 
 
 @Component({
   selector: 'app-test-register',

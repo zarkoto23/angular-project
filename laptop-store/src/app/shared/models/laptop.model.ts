@@ -1,7 +1,7 @@
 export interface Laptop {
-  id?: string;
-  ownerID?: string;
-  createdAt?: string;
+  _id?: string;
+  ownerId?: string;
+  created_at?: string;
   brand: string;
   model: string;
   imageUrl: string;
