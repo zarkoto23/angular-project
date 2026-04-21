@@ -1,6 +1,6 @@
-export interface Register{
-    email:string
-    username:string
-    password:string
-    rePass:string
+// src/app/shared/models/register.model.ts
+export interface RegisterCredentials {
+  email: string;
+  password: string;
+  confirmPassword?: string;
 }

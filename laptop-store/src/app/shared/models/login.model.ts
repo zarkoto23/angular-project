@@ -1,4 +1,5 @@
-export interface Login{
-    email:string
-    password:string
+// src/app/shared/models/login.model.ts
+export interface LoginCredentials {
+  email: string;
+  password: string;
 }

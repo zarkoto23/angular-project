@@ -1,10 +1,6 @@
-export interface User{
-    _id:string
-    email:string
-    username:string
-    created_at: string;
-    updatedAt: string;
-
-    liked:string[]
-    created:string[]
+// src/app/shared/models/user.model.ts
+export interface User {
+  id: string;          
+  email: string;        
+  created_at?: string;  
 }
