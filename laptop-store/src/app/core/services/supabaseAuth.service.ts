@@ -14,7 +14,7 @@ export class SupabaseService {
   public currentUsr$ = this.currentUsrSubject.asObservable();
 
   constructor() {
-    this.supabase = createClient(environment.supabaseKey, environment.supabaseUrl);
+    this.supabase = createClient(environment.supabaseUrl, environment.supabaseKey);
 
     this.supabase.auth.onAuthStateChange((_event, session) => {
       const appUser = this.toAppUser(session?.user);
