@@ -1,0 +1,23 @@
+.no-products {
+    text-align: center;
+    padding: 50px 20px;
+    border: 2px dashed #cbd5e1;
+    border-radius: 18px;
+    background: #f8fafc;
+}
+
+.icon {
+    font-size: 42px;
+    margin-bottom: 12px;
+}
+
+.no-products h3 {
+    font-size: 22px;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.no-products p {
+    font-size: 15px;
+    color: #6b7280;
+}

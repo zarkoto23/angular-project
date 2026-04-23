@@ -10,26 +10,28 @@ export class LaptopService {
   private supabaseService = inject(SupabaseService);
   private supabase = this.supabaseService.getSupabaseClient();
 
-  private transformToLaptop(item: any): Laptop {
-    return {
-      _id: item._id,
-      ownerId: item.ownerId,
-      created_at: item.created_at,
+private transformToLaptop(item: any): Laptop {
+  return {
+    _id: item._id,
+    ownerId: item.ownerId,
+    created_at: item.created_at,
 
-      brand: item.data?.brand || '',
-      model: item.data?.model || '',
-      imageUrl: item.data?.imageUrl || '',
-      price: item.data?.price || 0,
-      processor: item.data?.processor || '',
-      ram: item.data?.ram || '',
-      storage: item.data?.storage || '',
-      displaySize: item.data?.displaySize || 0,
-      operatingSystem: item.data?.operatingSystem || '',
-      description: item.data?.description || '',
-      inCartByUserIds: item.data?.inCartByUserIds || [],
-    };
-  }
+    brand: item.data?.brand ?? '',
+    model: item.data?.model ?? '',
+    imageUrl: item.data?.imageUrl ?? '',
+    price: item.data?.price ?? 0,
+    processor: item.data?.processor ?? '',
+    ram: item.data?.ram ?? '',
+    storage: item.data?.storage ?? '',
+    displaySize: item.data?.displaySize ?? 0,
+    operatingSystem: item.data?.operatingSystem ?? 'Windows 11',
+    description: item.data?.description, 
+    backlight: item.data?.backlight ?? false,
+    class: item.data?.class ?? 'Student',
 
+    inCartByUserIds: item.data?.inCartByUserIds ?? []
+  };
+}
   private transformToLaptops(data: any[]): Laptop[] {
     if (!data || !Array.isArray(data)) {
       return [];
