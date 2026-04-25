@@ -1,264 +1,181 @@
-import { inject, Injectable } from '@angular/core';
+// laptop.service.ts
+import { Injectable, inject } from '@angular/core';
+import { Observable, from, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { SupabaseService } from './supabase.service';
-import { catchError, from, map, Observable, of, switchMap } from 'rxjs';
 import { Laptop } from '../models/laptop.model';
 
 @Injectable({
-  providedIn: 'root',
+  providedIn: 'root'
 })
 export class LaptopService {
   private supabaseService = inject(SupabaseService);
   private supabase = this.supabaseService.getSupabaseClient();
 
-
-
-
-  getAll(): Observable<Laptop[]> {
-    const promise = this.supabase.from('laptops').select('*');
-
-    return from(promise).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return this.transformToLaptops(data || []);
-      }),
-      catchError((err) => {
-        console.error('Error fetching laptops:', err);
-        return of([]);
-      }),
+  // GET ALL - всички лаптопи
+  getAll(): Observable<{ data: Laptop[] | null; error: any }> {
+    return from(
+      this.supabase.from('laptops').select('*')
     );
   }
 
-  getOne(id: string): Observable<Laptop | null> {
-    const promise = this.supabase.from('laptops').select('*').eq('id', id).single();
-
-    return from(promise).pipe(
-      map(({ data, error }) => {
-        if (error) throw error;
-        return data ? this.transformToLaptop(data) : null;
-      }),
-      catchError((err) => {
-        console.error('Error fetching laptop:', err);
-        return of(null);
-      }),
+  // GET ONE - един лаптоп по ID
+  getOne(id: string): Observable<{ data: Laptop | null; error: any }> {
+    return from(
+      this.supabase
+        .from('laptops')
+        .select('*')
+        .eq('id', id)
+        .single()
     );
   }
 
-  owned(): Observable<Laptop[]> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.log('Няма логнат потребител');
-          return of([]);
+  // CREATE - създаване на нов лаптоп
+  create(laptopData: Laptop['data']): Observable<{ data: Laptop | null; error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ data: null, error: { message: 'Трябва да сте логнати за да добавяте лаптопи' } });
+    }
+
+    const newLaptop = {
+      owner_id: currentUser.id,
+      data: laptopData
+    };
+
+    return from(
+      this.supabase
+        .from('laptops')
+        .insert([newLaptop])
+        .select()
+        .single()
+    );
+  }
+
+  // EDIT - редакция на лаптоп (само собственика)
+  edit(id: string, updatedData: Partial<Laptop['data']>): Observable<{ data: Laptop | null; error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ data: null, error: { message: 'Трябва да сте логнати' } });
+    }
+
+    return from(
+      this.supabase
+        .from('laptops')
+        .update({ data: updatedData })
+        .eq('id', id)
+        .eq('owner_id', currentUser.id)
+        .select()
+        .single()
+    );
+  }
+
+  // DELETE - изтриване на лаптоп (само собственика)
+  delete(id: string): Observable<{ error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ error: { message: 'Трябва да сте логнати' } });
+    }
+
+    return from(
+      this.supabase
+        .from('laptops')
+        .delete()
+        .eq('id', id)
+        .eq('owner_id', currentUser.id)
+    );
+  }
+
+  // ADD TO CART - добавяне в количката
+  addToCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ data: null, error: { message: 'Трябва да сте логнати за да добавяте в количка' } });
+    }
+
+    return from(
+      this.supabase
+        .from('laptops')
+        .select('data')
+        .eq('id', laptopId)
+        .single()
+    ).pipe(
+      switchMap(response => {
+        if (response.error) {
+          return of({ data: null, error: response.error });
         }
-
-        const promise = this.supabase.from('laptops').select('*').eq('ownerID', user.id);
-
-        return from(promise).pipe(
-          map(({ data, error }) => {
-            if (error) throw error;
-            return this.transformToLaptops(data || []);
-          }),
+        
+        const currentCart = response.data?.data?.inCartIn || [];
+        
+        if (currentCart.includes(currentUser.id)) {
+          return of({ data: null, error: { message: 'Лаптопът вече е в количката' } });
+        }
+        
+        const newCart = [...currentCart, currentUser.id];
+        
+        return from(
+          this.supabase
+            .from('laptops')
+            .update({ data: { ...response.data.data, inCartIn: newCart } })
+            .eq('id', laptopId)
+            .select()
+            .single()
         );
-      }),
-      catchError((err) => {
-        console.error('Error fetching owned laptops:', err);
-        return of([]);
-      }),
+      })
     );
   }
 
-  inCart(): Observable<Laptop[]> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.log('Няма логнат потребител');
-          return of([]);
+  // REMOVE FROM CART - премахване от количката
+  removeFromCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ data: null, error: { message: 'Трябва да сте логнати' } });
+    }
+
+    return from(
+      this.supabase
+        .from('laptops')
+        .select('data')
+        .eq('id', laptopId)
+        .single()
+    ).pipe(
+      switchMap(response => {
+        if (response.error) {
+          return of({ data: null, error: response.error });
         }
-
-        const promise = this.supabase.from('laptops').select('*');
-
-        return from(promise).pipe(
-          map(({ data, error }) => {
-            if (error) throw error;
-            const allLaptops = this.transformToLaptops(data || []);
-            return allLaptops.filter((laptop) => laptop.inCartByUserIds?.includes(user.id));
-          }),
+        
+        const currentCart = response.data?.data?.inCartIn || [];
+        const newCart = currentCart.filter((id: string) => id !== currentUser.id);
+        
+        return from(
+          this.supabase
+            .from('laptops')
+            .update({ data: { ...response.data.data, inCartIn: newCart } })
+            .eq('id', laptopId)
+            .select()
+            .single()
         );
-      }),
-      catchError((err) => {
-        console.error('Error fetching cart laptops:', err);
-        return of([]);
-      }),
+      })
     );
   }
 
-  create(laptopData: any): Observable<Laptop | null> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.error('❌ Няма логнат потребител');
-          return of(null);
-        }
+  // GET USER CART - всички лаптопи в количката на текущия потребител
+  getUserCart(): Observable<{ data: Laptop[] | null; error: any }> {
+    const currentUser = this.supabaseService.getCurrentUserValue();
+    
+    if (!currentUser) {
+      return of({ data: null, error: { message: 'Трябва да сте логнати' } });
+    }
 
-        const dbData = {
-          ownerId: user.id,
-          data: {
-            brand: laptopData.brand,
-            model: laptopData.model,
-            imageUrl: laptopData.imageUrl,
-            price: laptopData.price,
-            processor: laptopData.processor,
-            ram: laptopData.ram,
-            storage: laptopData.storage,
-            displaySize: laptopData.displaySize,
-            operatingSystem: laptopData.operatingSystem,
-            description: laptopData.description,
-            inCartByUserIds: [],
-          },
-        };
-
-        const promise = this.supabase.from('laptops').insert(dbData).select();
-
-        return from(promise).pipe(
-          map(({ data, error }) => {
-            if (error) throw error;
-            return data?.[0] ? this.transformToLaptop(data[0]) : null;
-          }),
-        );
-      }),
-      catchError((err) => {
-        console.error('Error creating laptop:', err);
-        return of(null);
-      }),
-    );
-  }
-
-  update(id: string, laptopData: Partial<Laptop>): Observable<Laptop | null> {
-    return this.getOne(id).pipe(
-      switchMap((existingLaptop) => {
-        if (!existingLaptop) {
-          console.error('Лаптопът не съществува');
-          return of(null);
-        }
-
-        const updatedData = {
-          ...existingLaptop,
-          ...laptopData,
-        };
-
-        const dbData = {
-          data: {
-            brand: updatedData.brand,
-            model: updatedData.model,
-            imageUrl: updatedData.imageUrl,
-            price: updatedData.price,
-            processor: updatedData.processor,
-            ram: updatedData.ram,
-            storage: updatedData.storage,
-            displaySize: updatedData.displaySize,
-            operatingSystem: updatedData.operatingSystem,
-            description: updatedData.description,
-            inCartByUserIds: updatedData.inCartByUserIds || [],
-          },
-        };
-
-        const promise = this.supabase.from('laptops').update(dbData).eq('id', id).select();
-
-        return from(promise).pipe(
-          map(({ data, error }) => {
-            if (error) throw error;
-            return data?.[0] ? this.transformToLaptop(data[0]) : null;
-          }),
-        );
-      }),
-      catchError((err) => {
-        console.error('Error updating laptop:', err);
-        return of(null);
-      }),
-    );
-  }
-
-  delete(id: string): Observable<boolean> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.error('Няма логнат потребител');
-          return of(false);
-        }
-
-        const promise = this.supabase.from('laptops').delete().eq('id', id).eq('ownerID', user.id);
-
-        return from(promise).pipe(
-          map(({ error }) => {
-            if (error) throw error;
-            console.log('✅ Лаптопът е изтрит успешно');
-            return true;
-          }),
-        );
-      }),
-      catchError((err) => {
-        console.error('Error deleting laptop:', err);
-        return of(false);
-      }),
-    );
-  }
-
-  addToCart(laptopId: string): Observable<Laptop | null> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.error('Няма логнат потребител');
-          return of(null);
-        }
-
-        return this.getOne(laptopId).pipe(
-          switchMap((laptop) => {
-            if (!laptop) {
-              console.error('Лаптопът не съществува');
-              return of(null);
-            }
-
-            if (laptop.inCartByUserIds?.includes(user.id)) {
-              console.log('Лаптопът вече е в количката');
-              return of(laptop);
-            }
-
-            const updatedInCart = [...(laptop.inCartByUserIds || []), user.id];
-            return this.update(laptopId, { inCartByUserIds: updatedInCart });
-          }),
-        );
-      }),
-      catchError((err) => {
-        console.error('Error adding to cart:', err);
-        return of(null);
-      }),
-    );
-  }
-
-  removeFromCart(laptopId: string): Observable<Laptop | null> {
-    return this.supabaseService.getCurrentUser().pipe(
-      switchMap((user) => {
-        if (!user) {
-          console.error('Няма логнат потребител');
-          return of(null);
-        }
-
-        return this.getOne(laptopId).pipe(
-          switchMap((laptop) => {
-            if (!laptop) {
-              console.error('Лаптопът не съществува');
-              return of(null);
-            }
-
-            const updatedInCart = (laptop.inCartByUserIds || []).filter((id) => id !== user.id);
-            return this.update(laptopId, { inCartByUserIds: updatedInCart });
-          }),
-        );
-      }),
-      catchError((err) => {
-        console.error('Error removing from cart:', err);
-        return of(null);
-      }),
+    return from(
+      this.supabase
+        .from('laptops')
+        .select('*')
+        .contains('data->inCartIn', [currentUser.id])
     );
   }
 }

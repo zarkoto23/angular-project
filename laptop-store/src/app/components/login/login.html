@@ -1,8 +1,13 @@
-<div class="register-page">
-    <div class="container">
+<div class="container">
+    <div class="register-page">
+        @if(showErrorModal){
+        <app-error-modal [message]="errorModalMessage" (closed)="closeErrorModal()"></app-error-modal>
+
+        }
         <div class="register-wrapper">
 
-            <!-- Left side -->
+
+
             <div class="register-info">
                 <span class="badge">Вход в системата</span>
                 <h1>Влез в своя профил в LaptopMarket</h1>
@@ -12,7 +17,6 @@
 
             </div>
 
-            <!-- Form -->
             <div class="register-card">
                 <h2>Впиши своите данни</h2>
 
@@ -20,17 +24,15 @@
 
                     <div class="form-group">
                         <label>Имейл</label>
-                        <input type="email" placeholder="example@email.com" />
+                        <input [(ngModel)]="email" type="email" name="email" placeholder="example@email.com" />
                     </div>
 
                     <div class="form-group">
                         <label>Парола</label>
-                        <input type="password" placeholder="••••••••" />
+                        <input [(ngModel)]="password" type="password" name="password" placeholder="••••••••" />
                     </div>
 
-                    <button class="btn btn-primary full-width">
-                        Вход
-                    </button>
+                    <button (click)="onLogin()" class="btn btn-primary full-width">Вход</button>
                 </form>
 
                 <p class="login-link">
