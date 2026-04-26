@@ -1,11 +1,11 @@
 <div class="product-card">
     <img src="{{product.data.image_url}}" alt="{{product.data.image_url}}" />
     <div class="product-info">
-        <h3>{{product.data.brand }} {{product.data.model}}</h3>
+        <h3>{{product.data.brand}} {{product.data.model}}</h3>
         <p>{{product.data.processor}} • {{product.data.ram}}GB RAM • {{product.data.storage}}GB</p>
         <div class="product-bottom">
             <span class="price">€{{product.data.price}}</span>
-            <button class="btn btn-small">Виж</button>
+            <button class="btn btn-small" [routerLink]="['/laptops', product.id]">Виж</button>
         </div>
     </div>
 </div>

@@ -1,1 +1,83 @@
-<p>details-cart works!</p>
+<!-- components/shared/details-cart/details-cart.html -->
+@let laptop = laptop$ | async;
+
+<div class="details-container">
+  <div class="container">
+    <!-- Back button -->
+    <div class="back-button">
+      <a routerLink="/laptops" class="btn-back">← Назад към всички лаптопи</a>
+    </div>
+
+    <!-- Product Details -->
+    @if (laptop) {
+      <div class="product-details">
+        <!-- Product Image -->
+        <div class="product-image">
+          <img [src]="laptop.data.image_url" [alt]="laptop.data.brand + ' ' + laptop.data.model">
+        </div>
+
+        <!-- Product Info -->
+        <div class="product-info">
+          <div class="product-header">
+            <h1>{{ laptop.data.brand }} {{ laptop.data.model }}</h1>
+            <div class="product-price">€{{ laptop.data.price }}</div>
+          </div>
+
+          <div class="product-specs">
+            <div class="specs-grid">
+              <div class="spec-item">
+                <span class="spec-label">Процесор:</span>
+                <span class="spec-value">{{ laptop.data.processor }}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">RAM памет:</span>
+                <span class="spec-value">{{ laptop.data.ram }} GB</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Съхранение:</span>
+                <span class="spec-value">{{ laptop.data.storage }} GB</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Екран:</span>
+                <span class="spec-value">{{ laptop.data.display_size }}"</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Операционна система:</span>
+                <span class="spec-value">{{ laptop.data.operating_system }}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Клас:</span>
+                <span class="spec-value">{{ laptop.data.class }}</span>
+              </div>
+              <div class="spec-item">
+                <span class="spec-label">Подсветка на клавиатурата:</span>
+                <span class="spec-value">{{ laptop.data.backlight ? 'Да' : 'Не' }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Description -->
+          @if (laptop.data.description) {
+            <div class="product-description">
+              <h3>Описание</h3>
+              <p>{{ laptop.data.description }}</p>
+            </div>
+          }
+
+          <!-- Action Buttons -->
+          <div class="product-actions">
+            <button class="btn-edit" (click)="editLaptop(laptop.id)">
+              <span>✏️</span> Редактирай
+            </button>
+            <button class="btn-delete" (click)="deleteLaptop(laptop.id)">
+              <span>🗑️</span> Изтрий
+            </button>
+            <button class="btn-cart" (click)="addToCart(laptop.id)">
+              <span>🛒</span> Добави в количка
+            </button>
+          </div>
+        </div>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,38 @@
+<div class="split-layout">
+  <!-- Лява секция - Hero (30%) -->
+  <section class="hero">
+    <div class="container hero-content">
+      <div class="hero-text">
+        <span class="hero-badge">Купувай и продавай лесно</span>
+        <h1>Открий своя следващ лаптоп на добра цена</h1>
+        <p>
+          Платформа за нови и употребявани лаптопи. Разгледай оферти,
+          сравни модели и публикувай своя обява само за минути.
+        </p>
+
+        <div class="hero-buttons">
+          <button class="btn btn-primary" routerLink="/laptops">Разгледай всички</button>
+          <button class="btn btn-outline" routerLink="/create">Продай</button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Дясна секция - Products (70%) -->
+  <div class="products-section">
+    <h2>Последно добавени лаптопи</h2>
+
+    @if (products$ | async; as products) {
+      @if (products.length === 0) {
+        <br>
+        <h3>За момента няма добавени лаптопи</h3>
+      }
+
+      <div class="product-grid">
+        @for (product of products; track product.id) {
+          <app-product-card [product]="product"></app-product-card>
+        }
+      </div>
+    }
+  </div>
+</div>

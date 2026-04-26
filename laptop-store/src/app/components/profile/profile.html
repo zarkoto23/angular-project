@@ -1,74 +1,74 @@
+<!-- components/profile/profile.html -->
 <div class="profile-page">
-    <div class="container">
-        <!-- Profile Header -->
-        <section class="profile-hero">
-            <div class="profile-avatar">
-                <span>П</span>
-            </div>
+  <div class="container">
+    <section class="profile-hero">
+      <div class="profile-avatar">
+        <span>{{ currentUser?.email?.charAt(0) || 'П' }}</span>
+      </div>
 
-            <div class="profile-info">
-                <h1>Профил</h1>
-                <h2>Петър Иванов</h2>
-                <p>Управлявай своите обяви и продуктите, които си добавил в количката.</p>
-            </div>
-        </section>
+      <div class="profile-info">
+        <h1>Профил</h1>
+        <h2>{{ currentUser?.email || 'Потребител' }}</h2>
+        <p>Управлявай своите обяви и продуктите, които си добавил в количката.</p>
+      </div>
+    </section>
 
-        <!-- Profile Stats -->
-        <!-- <section class="profile-stats">
-            <div class="stat-card">
-                <h3>5</h3>
-                <p>Мои обяви</p>
-            </div>
+    <!-- 2 колони за двете секции -->
+    <div class="profile-sections-grid">
+      <!-- Моите обяви -->
+      <div class="profile-section">
+        <div class="section-header">
+          <h2>Моите обяви</h2>
+          <p>Лаптопите, които си публикувал.</p>
+        </div>
 
-            <div class="stat-card">
-                <h3>2</h3>
-                <p>В количката</p>
-            </div>
-
-            <div class="stat-card">
-                <h3>12</h3>
-                <p>Харесани продукта</p>
-            </div>
-        </section> -->
-
-        <!-- My Listings -->
-        <section class="profile-section">
-            <div class="section-header">
-                <div>
-                    <h2>Моите обяви</h2>
-                    <p>Тук ще се показват всички лаптопи, които си публикувал.</p>
+        <div class="section-card">
+          @let myProducts = (myLaptops$ | async);
+          
+          @if (myProducts && myProducts.length > 0) {
+            <div class="products-grid">
+              @for (laptop of myProducts; track laptop.id) {
+                <div class="product-card-wrapper">
+                  <app-product-card [product]="laptop"></app-product-card>
+                  <button class="btn-delete" (click)="deleteLaptop(laptop.id)">Изтрий</button>
                 </div>
+              }
             </div>
+          } @else {
+            <div class="placeholder-box">
+              <h3>Нямаш създадени обяви</h3>
+              <p>Кликни <a routerLink="/create">тук</a> за да създадеш първата си обява.</p>
+            </div>
+          }
+        </div>
+      </div>
 
-            <div class="section-card">
-                <!-- Тук сложи твоя готов items/list component -->
-                <!-- Пример: <app-items></app-items> -->
+      <!-- Количка -->
+      <div class="profile-section">
+        <div class="section-header">
+          <h2>Продукти в количката</h2>
+          <p>Лаптопите, които искаш да закупиш.</p>
+        </div>
 
-                <div class="placeholder-box">
-                    <h3>Списък с мои обяви</h3>
-                    <p>Тук можеш да поставиш готовия компонент за cards / items.</p>
+        <div class="section-card">
+          @let cartProducts = (cartLaptops$ | async);
+          
+          @if (cartProducts && cartProducts.length > 0) {
+            <div class="products-grid">
+              @for (laptop of cartProducts; track laptop.id) {
+                <div class="product-card-wrapper">
+                  <app-product-card [product]="laptop"></app-product-card>
+                  <button class="btn-remove" (click)="removeFromCart(laptop.id)">Премахни</button>
                 </div>
+              }
             </div>
-        </section>
-
-        <!-- Cart -->
-        <section class="profile-section">
-            <div class="section-header">
-                <div>
-                    <h2>Продукти в количката</h2>
-                    <p>Тук ще виждаш продуктите, които искаш да закупиш.</p>
-                </div>
+          } @else {
+            <div class="placeholder-box">
+              <h3>Няма продукти в количката</h3>
             </div>
-
-            <div class="section-card">
-                <!-- Тук също може да сложиш друг готов компонент -->
-                <!-- Пример: <app-cart-items></app-cart-items> -->
-
-                <div class="placeholder-box">
-                    <h3>Продукти в количката</h3>
-                    <p>Тук можеш да поставиш компонент за cart items.</p>
-                </div>
-            </div>
-        </section>
+          }
+        </div>
+      </div>
     </div>
+  </div>
 </div>

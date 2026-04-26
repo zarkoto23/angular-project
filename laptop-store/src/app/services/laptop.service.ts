@@ -130,16 +130,28 @@ export class LaptopService {
   }
 
   getUserCart(): Observable<{ data: Laptop[] | null; error: any }> {
-    const currentUser = this.supabaseService.getCurrentUserValue();
+  const currentUser = this.supabaseService.getCurrentUserValue();
 
-    if (!currentUser) {
-      return of({ data: null, error: { message: 'Трябва да сте логнати' } });
-    }
-
-    return from(
-      this.supabase.from('laptops').select('*').contains('data->inCartIn', [currentUser.id]),
-    );
+  if (!currentUser) {
+    return of({ data: null, error: { message: 'Трябва да сте логнати' } });
   }
+
+  // Вариант 1: Вземаме всички лаптопи и филтрираме в JavaScript
+  return from(this.supabase.from('laptops').select('*')).pipe(
+    map((response) => {
+      if (response.error) {
+        return { data: null, error: response.error };
+      }
+      
+      const laptops = response.data as Laptop[];
+      const filteredLaptops = laptops.filter(laptop => 
+        laptop.data.in_cart_to?.includes(currentUser.id)
+      );
+      
+      return { data: filteredLaptops, error: null };
+    })
+  );
+}
 
   getLatestProducts(limit: number = 5): Observable<Laptop[]> {
     return from(

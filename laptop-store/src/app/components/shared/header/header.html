@@ -1,3 +1,4 @@
+<!-- components/header/header.html -->
 <header class="topbar">
   <div class="container topbar-content">
     <div routerLink="/" class="logo">
@@ -15,10 +16,18 @@
     </nav>
 
     <div class="actions">
-      <button class="btn btn-light" routerLink="/login">Вход</button>
-      <button class="btn btn-primary" routerLink="/register">Регистрация</button>
-      <button class="btn btn-primary" routerLink="/profile">Моят профил</button>
+      <!-- За нелогнати потребители - Angular 17+ синтаксис -->
+      @if (!currentUser) {
+        <button class="btn btn-light" routerLink="/login">Вход</button>
+        <button class="btn btn-primary" routerLink="/register">Регистрация</button>
+      }
 
+      <!-- За логнати потребители - Angular 17+ синтаксис -->
+      @if (currentUser) {
+        <span class="user-email">{{ currentUser.email }}</span>
+        <button class="btn btn-primary" routerLink="/profile">Моят профил</button>
+        <button class="btn btn-danger" (click)="logout()">Изход</button>
+      }
     </div>
   </div>
 </header>

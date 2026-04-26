@@ -1,12 +1,24 @@
+// components/laptops/laptops.ts
 import { Component } from '@angular/core';
-import { HeroSection } from './hero-section/hero-section';
-import { Categories } from './categories/categories';
-import { Search } from './search/search';
+import { Observable, map } from 'rxjs';
+import { LaptopService } from '../../services/laptop.service';
+import { Laptop } from '../../models/laptop.model';
+import { ProductCard } from '../home/products/product-card/product-card';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-laptops',
-  imports: [HeroSection, Categories,Search],
+  standalone: true,
+  imports: [ProductCard, CommonModule],
   templateUrl: './laptops.html',
-  styleUrl: './laptops.css',
+  styleUrls: ['./laptops.css']
 })
-export class Laptops {}
+export class LaptopsComponent {
+  products$: Observable<Laptop[]>;
+
+  constructor(private laptopService: LaptopService) {
+    this.products$ = this.laptopService.getAll().pipe(
+      map(response => response.data || [])  // 👈 Трансформираме до масив
+    );
+  }
+}

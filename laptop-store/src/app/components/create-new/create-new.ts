@@ -195,8 +195,8 @@ export class CreateNew implements OnInit, OnDestroy {
     this.errorModalMessage = '';
     this.cdr.detectChanges();
 
-    if (this.modalType === 'success') {
-      this.router.navigate(['/laptops']);
-    }
+    // if (this.modalType === 'success') {
+    //   this.router.navigate(['/laptops']);
+    // }
   }
 }

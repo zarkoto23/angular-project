@@ -1,3 +1,23 @@
-<app-hero-section></app-hero-section>
-<app-search></app-search>
-<app-categories></app-categories>
+<div class="content">
+   <h2>Всикчки лаптопи</h2>
+
+@let products = (products$ | async) ?? [];
+
+<div class="laptops-container">
+  @if (products.length > 0) {
+    <div class="laptops-grid">
+      @for (laptop of products; track laptop.id) {
+        <app-product-card [product]="laptop"></app-product-card>
+      }
+    </div>
+  }
+  
+  @if (products.length === 0) {
+    <div class="no-products">
+      <p>Няма налични лаптопи</p>
+    </div>
+  }
+</div>
+
+
+</div>
