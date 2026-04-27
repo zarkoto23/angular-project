@@ -55,14 +55,14 @@ ng serve
 | Route             | Component              | Guard 
 |-------------------|----------------------- |-------
 | `/home`           | HomeComponent          | Public 
-| `/laptops`    | AllLaptopsComponent    | Public 
-| `/create`     | AddLaptopComponent     | AuthGuard 
+| `/laptops`        | AllLaptopsComponent    | Public 
+| `/create`         | AddLaptopComponent     | AuthGuard 
 | `/profile`        | ProfileComponent       | AuthGuard 
 | `/login`          | LoginComponent         | GuestGuard
 | `/register`       | RegisterComponent      | GuestGuard
-| `/laptops/:id`     | LaptopDetailsComponent | Public
+| `/laptops/:id`    | LaptopDetailsComponent | Public
 | `/profile/:userId`| ProfileComponent	      | AuthGuard
-| `/edit/:id`| EditLaptopComponent	   | AuthGuard, OwnerGuard
+| `/edit/:id`       | EditLaptopComponent	   | AuthGuard, OwnerGuard
 
 
 
