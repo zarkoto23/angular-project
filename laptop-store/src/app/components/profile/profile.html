@@ -12,7 +12,6 @@
       </div>
     </section>
 
-    <!-- 2 колони за двете секции -->
     <div class="profile-sections-grid">
       <!-- Моите обяви -->
       <div class="profile-section">
@@ -23,29 +22,28 @@
 
         <div class="section-card">
           @let myProducts = myLaptops();
-          
+
           @if (myProducts && myProducts.length > 0) {
-            <div class="products-grid">
-              @for (laptop of myProducts; track laptop.id) {
-                <div class="product-card-wrapper">
-                  <app-product-card [product]="laptop"></app-product-card>
-                  <div class="button-group">
-                    <button class="btn-edit" (click)="editLaptop(laptop.id)">Редактирай</button>
-                    <button class="btn-delete" (click)="deleteLaptop(laptop.id)">Изтрий</button>
-                  </div>
-                </div>
-              }
+          <div class="products-grid">
+            @for (laptop of myProducts; track laptop.id) {
+            <div class="product-card-wrapper">
+              <app-product-card [product]="laptop"></app-product-card>
+              <div class="button-group">
+                <button id="edit-btn" class="btn-edit" routerLink="/edit/{{ laptop.id }}">Редактирай</button>
+                <button class="btn-delete" (click)="deleteLaptop(laptop.id)">Изтрий</button>
+              </div>
             </div>
+            }
+          </div>
           } @else {
-            <div class="placeholder-box">
-              <h3>Нямаш създадени обяви</h3>
-              <p>Кликни <a routerLink="/create">тук</a> за да създадеш първата си обява.</p>
-            </div>
+          <div class="placeholder-box">
+            <h3>Нямаш създадени обяви</h3>
+            <p>Кликни <a routerLink="/create">тук</a> за да създадеш първата си обява.</p>
+          </div>
           }
         </div>
       </div>
 
-      <!-- Количка -->
       <div class="profile-section">
         <div class="section-header my-card">
           <h2>Продукти в количката</h2>
@@ -54,20 +52,20 @@
 
         <div class="section-card">
           @let cartProducts = cartLaptops();
-          
+
           @if (cartProducts && cartProducts.length > 0) {
-            <div class="products-grid">
-              @for (laptop of cartProducts; track laptop.id) {
-                <div class="product-card-wrapper">
-                  <app-product-card [product]="laptop"></app-product-card>
-                  <button class="btn-remove" (click)="removeFromCart(laptop.id)">Премахни</button>
-                </div>
-              }
+          <div class="products-grid">
+            @for (laptop of cartProducts; track laptop.id) {
+            <div class="product-card-wrapper">
+              <app-product-card [product]="laptop"></app-product-card>
+              <button class="btn-remove" (click)="removeFromCart(laptop.id)">Премахни</button>
             </div>
+            }
+          </div>
           } @else {
-            <div class="placeholder-box">
-              <h3>Няма продукти в количката</h3>
-            </div>
+          <div class="placeholder-box">
+            <h3>Няма продукти в количката</h3>
+          </div>
           }
         </div>
       </div>

@@ -1,6 +1,32 @@
-/* components/profile/profile.css */
 .profile-page {
   padding: 80px 0;
+}
+
+.button-group {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+}
+
+#edit-btn {
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: #266BE5;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  width: 100%;
+}
+
+#edit-btn:hover {
+  background-color: #1d4ed8;
+  transform: translateY(-1px);
+
 }
 
 .profile-hero {
@@ -48,7 +74,6 @@
   max-width: 700px;
 }
 
-/* 2 колони за двете секции */
 .profile-sections-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -86,7 +111,6 @@
   flex: 1;
 }
 
-/* Grid за лаптопите - 2 колони във всяка секция */
 .products-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
@@ -99,15 +123,14 @@
   min-width: 0;
 }
 
-/* Стилове за лаптоп картата */
 .product-card-wrapper :host ::ng-deep .product-card,
 .product-card-wrapper ::ng-deep .product-card {
   width: 100%;
   margin: 0;
 }
 
-/* Бутони за изтриване и премахване */
-.btn-delete, .btn-remove {
+.btn-delete,
+.btn-remove {
   margin-top: 12px;
   padding: 8px 16px;
   background-color: #ef4444;
@@ -121,12 +144,12 @@
   width: 100%;
 }
 
-.btn-delete:hover, .btn-remove:hover {
+.btn-delete:hover,
+.btn-remove:hover {
   background-color: #dc2626;
   transform: translateY(-1px);
 }
 
-/* Placeholder box */
 .placeholder-box {
   border: 2px dashed #cbd5e1;
   border-radius: 18px;
@@ -156,7 +179,8 @@
   text-decoration: underline;
 }
 
-/* Responsive */
+
+
 @media (max-width: 1200px) {
   .profile-sections-grid {
     gap: 24px;
@@ -168,7 +192,7 @@
     grid-template-columns: 1fr;
     gap: 40px;
   }
-  
+
   .products-grid {
     grid-template-columns: repeat(2, 1fr);
   }

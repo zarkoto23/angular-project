@@ -3,7 +3,6 @@ import { Products } from './products/products';
 import { Laptop } from '../../models/laptop.model';
 import { LaptopService } from '../../services/laptop.service';
 import { CommonModule } from '@angular/common';
-import { HeroSection } from "./hero-section/hero-section";
 import { SellSection } from './sell-section/sell-section';
 
 @Component({
@@ -25,7 +24,6 @@ export class Home implements OnInit {
     this.laptopService.getAll().subscribe({
       next: (response) => {
         this.laptops = response.data || [];
-        console.log('Заредени лаптопи:', this.laptops);
       },
     });
   }

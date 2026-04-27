@@ -1,54 +1,51 @@
-// app.routes.ts
 import { Routes } from '@angular/router';
-import { Home } from './components/home/home';
-import { Register } from './components/register/register';
-import { Login } from './components/login/login';
-import { CreateNew } from './components/create-new/create-new';
-import { About } from './components/static/about/about';
-import { NotFound } from './components/static/not-found/not-found';
-import { Profile } from './components/profile/profile';
 import { PublicGuard } from './guards/public.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { OwnerGuard } from './guards/owner.guard';
-import { LaptopsComponent } from './components/laptops/laptops';
-import { DetailsCart } from './components/shared/details-cart/details-cart';
-import { Edit } from './components/edit/edit';
+import { Home } from './components/home/home';
 
 export const routes: Routes = [
   { path: '', component: Home },
-  { path: 'laptops', component: LaptopsComponent },
-  { path: 'laptops/:id', component: DetailsCart },
-  { 
-    path: 'edit/:id', 
-    component: Edit, 
-    canActivate: [AuthGuard, OwnerGuard]  // Двоен guard - първо проверява дали е логнат, после дали е собственик
+  {
+    path: 'laptops',
+    loadComponent: () => import('./components/laptops/laptops').then((m) => m.LaptopsComponent),
   },
-  { 
-    path: 'create', 
-    component: CreateNew, 
-    canActivate: [AuthGuard] 
+  {
+    path: 'laptops/:id',
+    loadComponent: () =>
+      import('./components/shared/details-cart/details-cart').then((m) => m.DetailsCart),
   },
-  { 
-    path: 'register', 
-    component: Register, 
-    canActivate: [PublicGuard] 
+  {
+    path: 'edit/:id',
+    loadComponent: () => import('./components/edit/edit').then((m) => m.Edit),
+    canActivate: [AuthGuard, OwnerGuard],
   },
-  { 
-    path: 'login', 
-    component: Login, 
-    canActivate: [PublicGuard] 
+  {
+    path: 'create',
+    loadComponent: () => import('./components/create-new/create-new').then((m) => m.CreateNew),
+    canActivate: [AuthGuard],
   },
-  { 
-    path: 'about', 
-    component: About 
+  {
+    path: 'register',
+    loadComponent: () => import('./components/register/register').then((m) => m.Register),
+    canActivate: [PublicGuard],
   },
-  { 
-    path: 'profile', 
-    component: Profile, 
-    canActivate: [AuthGuard] 
+  {
+    path: 'login',
+    loadComponent: () => import('./components/login/login').then((m) => m.Login),
+    canActivate: [PublicGuard],
   },
-  { 
-    path: '**', 
-    component: NotFound 
+  {
+    path: 'about',
+    loadComponent: () => import('./components/static/about/about').then((m) => m.About),
+  },
+  {
+    path: 'profile',
+    loadComponent: () => import('./components/profile/profile').then((m) => m.Profile),
+    canActivate: [AuthGuard],
+  },
+  {
+    path: '**',
+    loadComponent: () => import('./components/static/not-found/not-found').then((m) => m.NotFound),
   },
 ];

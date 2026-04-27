@@ -1,4 +1,3 @@
-/* В компонента на модала или в глобалния styles.css */
 .error-backdrop {
     position: fixed;
     top: 0;
@@ -57,6 +56,7 @@
         transform: translateY(-30px);
         opacity: 0;
     }
+
     to {
         transform: translateY(0);
         opacity: 1;

@@ -1,10 +1,9 @@
-<!-- details-cart.html -->
 @let laptop = laptop$ | async;
 
 <div class="details-container">
     <div class="container">
         <div class="back-button">
-            <a routerLink="/laptops" class="btn-back">← Назад към всички лаптопи</a>
+            <a routerLink="/laptops" class="btn-back">Назад към всички лаптопи</a>
         </div>
 
         @if (laptop) {
@@ -68,22 +67,22 @@
                         Изтрий
                     </button>
                     }
-                    
+
                     @if (currentUserId && currentUserId !== laptop.owner_id) {
-                        @if ((isInCart$ | async) === true) {
-                            <div class="cart-actions">
-                                <button class="btn-in-cart" disabled>
-                                    ✓ В количката
-                                </button>
-                                <button class="btn-remove" (click)="removeFromCart(laptop.id)">
-                                    Премахни
-                                </button>
-                            </div>
-                        } @else {
-                            <button class="btn-cart" (click)="addToCart(laptop.id)">
-                                Добави в количка
-                            </button>
-                        }
+                    @if ((isInCart$ | async) === true) {
+                    <div class="cart-actions">
+                        <button class="btn-in-cart" disabled>
+                            Продукта е в количката!
+                        </button>
+                        <button class="btn-remove" (click)="removeFromCart(laptop.id)">
+                            Премахни
+                        </button>
+                    </div>
+                    } @else {
+                    <button class="btn-cart" (click)="addToCart(laptop.id)">
+                        Добави в количка
+                    </button>
+                    }
                     }
                 </div>
             </div>

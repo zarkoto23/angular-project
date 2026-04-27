@@ -1,11 +1,10 @@
-/* components/home/products/product-card/product-card.css */
 .product-card {
     display: flex;
     flex-direction: column;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-    width: 100%;  /* 👈 ПРОМЕНИ ОТ 70% НА 100% */
+    width: 100%;
     background: white;
 }
 

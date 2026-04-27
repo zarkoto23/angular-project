@@ -1,4 +1,3 @@
-// components/laptops/laptops.ts
 import { Component } from '@angular/core';
 import { Observable, map } from 'rxjs';
 import { LaptopService } from '../../services/laptop.service';
@@ -18,7 +17,7 @@ export class LaptopsComponent {
 
   constructor(private laptopService: LaptopService) {
     this.products$ = this.laptopService.getAll().pipe(
-      map(response => response.data || [])  // 👈 Трансформираме до масив
+      map(response => response.data || [])
     );
   }
 }

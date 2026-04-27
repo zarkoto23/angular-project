@@ -44,7 +44,6 @@
   margin-bottom: 16px;
 }
 
-/* Card */
 
 .register-card {
   background: #ffffff;
@@ -57,7 +56,6 @@
   margin-bottom: 24px;
 }
 
-/* Form */
 
 .form-group {
   display: flex;
@@ -83,14 +81,12 @@
   border-color: #2563eb;
 }
 
-/* Buttons */
 
 .full-width {
   width: 100%;
   margin-top: 10px;
 }
 
-/* Link */
 
 .login-link {
   margin-top: 16px;
@@ -108,7 +104,6 @@
   text-decoration: underline;
 }
 
-/* Responsive */
 
 @media (max-width: 992px) {
   .register-wrapper {

@@ -1,4 +1,3 @@
-/* components/laptop-details/laptop-details.css */
 .details-container {
   padding: 60px 0;
   background: #f8fafc;
@@ -133,7 +132,9 @@
   flex-wrap: wrap;
 }
 
-.btn-edit, .btn-delete, .btn-cart {
+.btn-edit,
+.btn-delete,
+.btn-cart {
   flex: 1;
   padding: 12px 24px;
   border: none;
@@ -149,12 +150,12 @@
 }
 
 .btn-edit {
-  background-color: #f59e0b;
+  background-color: #1D58D5;
   color: white;
 }
 
 .btn-edit:hover {
-  background-color: #d97706;
+  background-color: #1d4ed8;
   transform: translateY(-2px);
 }
 
@@ -178,21 +179,20 @@
   transform: translateY(-2px);
 }
 
-/* Responsive */
 @media (max-width: 992px) {
   .product-details {
     grid-template-columns: 1fr;
     gap: 0;
   }
-  
+
   .product-info {
     padding: 30px;
   }
-  
+
   .product-image {
     padding: 30px;
   }
-  
+
   .product-image img {
     max-width: 400px;
   }
@@ -202,25 +202,27 @@
   .details-container {
     padding: 40px 0;
   }
-  
+
   .product-header h1 {
     font-size: 24px;
   }
-  
+
   .product-price {
     font-size: 22px;
   }
-  
+
   .specs-grid {
     grid-template-columns: 1fr;
     gap: 12px;
   }
-  
+
   .product-actions {
     flex-direction: column;
   }
-  
-  .btn-edit, .btn-delete, .btn-cart {
+
+  .btn-edit,
+  .btn-delete,
+  .btn-cart {
     width: 100%;
   }
 }
@@ -229,11 +231,11 @@
   .product-info {
     padding: 20px;
   }
-  
+
   .product-image {
     padding: 20px;
   }
-  
+
   .spec-item {
     flex-direction: column;
     align-items: flex-start;
@@ -241,9 +243,7 @@
   }
 }
 
-/* ========== НОВИ СТИЛОВЕ ЗА БУТОНИТЕ НА КОЛИЧКАТА ========== */
 
-/* Група за действия с количката */
 .cart-actions {
   display: flex;
   gap: 16px;
@@ -251,7 +251,6 @@
   flex: 1;
 }
 
-/* Бутон "В количката" (disabled) */
 .btn-in-cart {
   flex: 1;
   background-color: #10b981;
@@ -270,12 +269,11 @@
   transition: all 0.3s ease;
 }
 
-/* Бутон "Премахни" */
 .btn-remove {
   flex: 1;
   background-color: transparent;
   color: #ef4444;
-  padding: 12px 24px;
+  padding: 10px 24px;
   border: 2px solid #ef4444;
   border-radius: 12px;
   font-size: 16px;
@@ -298,13 +296,12 @@
   transform: translateY(0);
 }
 
-/* Responsive за новите бутони */
 @media (max-width: 768px) {
   .cart-actions {
     flex-direction: column;
     width: 100%;
   }
-  
+
   .btn-in-cart,
   .btn-remove {
     width: 100%;
@@ -312,6 +309,7 @@
 }
 
 @media (max-width: 480px) {
+
   .btn-in-cart,
   .btn-remove {
     padding: 10px 20px;
@@ -319,14 +317,15 @@
   }
 }
 
-/* Анимация при клик */
 @keyframes btnPulse {
   0% {
     transform: scale(1);
   }
+
   50% {
     transform: scale(0.98);
   }
+
   100% {
     transform: scale(1);
   }
@@ -336,46 +335,32 @@
   animation: btnPulse 0.2s ease;
 }
 
-/* Ховър ефект за бутона "В количката" (въпреки че е disabled, за визуален ефект) */
-.btn-in-cart:hover {
-  background-color: #059669;
-  transform: translateY(-1px);
-}
-
-/* Ако искаш иконки към бутоните (чрез ::before) */
 .btn-cart::before {
-  content: "🛒";
   font-size: 16px;
 }
 
 .btn-in-cart::before {
-  content: "✓";
   font-size: 16px;
   font-weight: bold;
 }
 
 .btn-remove::before {
-  content: "✗";
   font-size: 18px;
   font-weight: bold;
 }
 
 .btn-edit::before {
-  content: "✏️";
   font-size: 14px;
 }
 
 .btn-delete::before {
-  content: "🗑️";
   font-size: 14px;
 }
 
 .btn-back::before {
-  content: "←";
   font-size: 18px;
 }
 
-/* Опционално: Стилове за това, когато няма потребител (скрит бутон) */
 .product-actions:empty {
   display: none;
 }
