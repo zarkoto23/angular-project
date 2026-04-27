@@ -1,4 +1,3 @@
-<!-- components/profile/profile.html -->
 <div class="profile-page">
   <div class="container">
     <section class="profile-hero">
@@ -17,20 +16,23 @@
     <div class="profile-sections-grid">
       <!-- Моите обяви -->
       <div class="profile-section">
-        <div class="section-header">
+        <div class="section-header my-products">
           <h2>Моите обяви</h2>
           <p>Лаптопите, които си публикувал.</p>
         </div>
 
         <div class="section-card">
-          @let myProducts = (myLaptops$ | async);
+          @let myProducts = myLaptops();
           
           @if (myProducts && myProducts.length > 0) {
             <div class="products-grid">
               @for (laptop of myProducts; track laptop.id) {
                 <div class="product-card-wrapper">
                   <app-product-card [product]="laptop"></app-product-card>
-                  <button class="btn-delete" (click)="deleteLaptop(laptop.id)">Изтрий</button>
+                  <div class="button-group">
+                    <button class="btn-edit" (click)="editLaptop(laptop.id)">Редактирай</button>
+                    <button class="btn-delete" (click)="deleteLaptop(laptop.id)">Изтрий</button>
+                  </div>
                 </div>
               }
             </div>
@@ -45,13 +47,13 @@
 
       <!-- Количка -->
       <div class="profile-section">
-        <div class="section-header">
+        <div class="section-header my-card">
           <h2>Продукти в количката</h2>
           <p>Лаптопите, които искаш да закупиш.</p>
         </div>
 
         <div class="section-card">
-          @let cartProducts = (cartLaptops$ | async);
+          @let cartProducts = cartLaptops();
           
           @if (cartProducts && cartProducts.length > 0) {
             <div class="products-grid">

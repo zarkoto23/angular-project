@@ -1,1 +1,230 @@
-<p>edit works!</p>
+<div class="edit-page">
+    <div class="container">
+        <div class="edit-header">
+            <h1>Редактирай обява</h1>
+            <p>Промени информацията за лаптопа</p>
+        </div>
+
+        @if (isLoading) {
+            <div class="loading-spinner">
+                <div class="spinner"></div>
+                <p>Зареждане на данните...</p>
+            </div>
+        } @else {
+            <div class="edit-card">
+                <form [formGroup]="laptopForm" (ngSubmit)="onSubmit()">
+                    <div class="form-section">
+                        <h3>Основна информация</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>*Марка</label>
+                                <input type="text" formControlName="brand" placeholder="Dell"
+                                    [class.invalid]="brand?.invalid && (brand?.touched || formSubmitted)" />
+                                @if (brand?.invalid && (brand?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (brand?.errors?.['required']) {
+                                    <span>Марката е задължителна</span>
+                                    }
+                                    @if (brand?.errors?.['minlength']) {
+                                    <span>Минимум 2 символа</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Модел</label>
+                                <input type="text" formControlName="model" placeholder="XPS 15"
+                                    [class.invalid]="model?.invalid && (model?.touched || formSubmitted)" />
+                                @if (model?.invalid && (model?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (model?.errors?.['required']) {
+                                    <span>Моделът е задължителен</span>
+                                    }
+                                    @if (model?.errors?.['minlength']) {
+                                    <span>Минимум 2 символа</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Цена (€)</label>
+                                <input type="number" formControlName="price" min="1" placeholder="2499"
+                                    [class.invalid]="price?.invalid && (price?.touched || formSubmitted)" />
+                                @if (price?.invalid && (price?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (price?.errors?.['required']) {
+                                    <span>Цената е задължителна</span>
+                                    }
+                                    @if (price?.errors?.['min']) {
+                                    <span>Цената трябва да е поне 1 €</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Операционна система</label>
+                                <select formControlName="operating_system"
+                                    [class.invalid]="operating_system?.invalid && (operating_system?.touched || formSubmitted)">
+                                    <option value="" disabled>Избери операционна система</option>
+                                    <option value="Windows 11">Windows 11</option>
+                                    <option value="Windows 10">Windows 10</option>
+                                    <option value="Linux">Linux</option>
+                                    <option value="macOS">macOS</option>
+                                    <option value="ChromeOS">ChromeOS</option>
+                                    <option value="FreeDOS">FreeDOS</option>
+                                    <option value="Друга">Друга</option>
+                                </select>
+                                @if (operating_system?.invalid && (operating_system?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    <span>Моля, изберете операционна система</span>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Характеристики</h3>
+
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label>*Процесор</label>
+                                <input type="text" formControlName="processor" placeholder="Intel Core i9-13900H"
+                                    [class.invalid]="processor?.invalid && (processor?.touched || formSubmitted)" />
+                                @if (processor?.invalid && (processor?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (processor?.errors?.['required']) {
+                                    <span>Процесорът е задължителен</span>
+                                    }
+                                    @if (processor?.errors?.['minlength']) {
+                                    <span>Минимум 2 символа</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*RAM (GB)</label>
+                                <input type="number" formControlName="ram" min="1" placeholder="32"
+                                    [class.invalid]="ram?.invalid && (ram?.touched || formSubmitted)" />
+                                @if (ram?.invalid && (ram?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (ram?.errors?.['required']) {
+                                    <span>RAM е задължителна</span>
+                                    }
+                                    @if (ram?.errors?.['min']) {
+                                    <span>RAM трябва да е поне 1 GB</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Памет (GB)</label>
+                                <input type="number" formControlName="storage" min="1" placeholder="1000"
+                                    [class.invalid]="storage?.invalid && (storage?.touched || formSubmitted)" />
+                                @if (storage?.invalid && (storage?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (storage?.errors?.['required']) {
+                                    <span>Паметта е задължителна</span>
+                                    }
+                                    @if (storage?.errors?.['min']) {
+                                    <span>Паметта трябва да е поне 1 GB</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Размер на дисплея (inch)</label>
+                                <input type="number" formControlName="display_size" min="1" step="0.1" placeholder="15.6"
+                                    [class.invalid]="display_size?.invalid && (display_size?.touched || formSubmitted)" />
+                                @if (display_size?.invalid && (display_size?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    @if (display_size?.errors?.['required']) {
+                                    <span>Размерът на дисплея е задължителен</span>
+                                    }
+                                    @if (display_size?.errors?.['min']) {
+                                    <span>Минимален размер 1 инч</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Подсветка на клавиатурата</label>
+                                <div class="radio-group">
+                                    <label class="radio-option">
+                                        <input type="radio" formControlName="backlight" name="backlight" [value]="true" />
+                                        Да
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" formControlName="backlight" name="backlight" [value]="false" />
+                                        Не
+                                    </label>
+                                </div>
+                                @if (backlight?.invalid && (backlight?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    <span>Моля, изберете дали има подсветка</span>
+                                </div>
+                                }
+                            </div>
+
+                            <div class="form-group">
+                                <label>*Клас</label>
+                                <select formControlName="class"
+                                    [class.invalid]="classCtrl?.invalid && (classCtrl?.touched || formSubmitted)">
+                                    <option value="" disabled>Избери класа на лаптопа</option>
+                                    <option value="Student">Student</option>
+                                    <option value="Business">Business</option>
+                                    <option value="Gaming">Gaming</option>
+                                    <option value="Premium">Premium</option>
+                                    <option value="Друго">Друго</option>
+                                </select>
+                                @if (classCtrl?.invalid && (classCtrl?.touched || formSubmitted)) {
+                                <div class="error-message">
+                                    <span>Моля, изберете клас</span>
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Снимка</h3>
+                        <div class="form-group">
+                            <label>Image URL</label>
+                            <input type="text" formControlName="image_url" placeholder="https://..." />
+                        </div>
+                    </div>
+
+                    <div class="form-section">
+                        <h3>Описание</h3>
+                        <div class="form-group">
+                            <textarea formControlName="description" rows="5" placeholder="Опиши лаптопа..."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-actions">
+                        <button type="button" class="btn btn-secondary" (click)="cancel()">
+                            Отказ
+                        </button>
+                        <button type="submit" class="btn btn-primary" [class.btn-disabled]="isSubmitting || !isFormValid">
+                            {{ isSubmitting ? 'Запазване...' : 'Запази промените' }}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        }
+    </div>
+</div>
+
+@if (showErrorModal) {
+<app-error-modal [isVisible]="showErrorModal" [message]="errorModalMessage" [type]="modalType"
+    (closed)="closeErrorModal()">
+</app-error-modal>
+}

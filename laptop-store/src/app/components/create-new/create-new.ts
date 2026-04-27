@@ -40,6 +40,8 @@ export class CreateNew implements OnInit, OnDestroy {
   modalType: 'error' | 'success' = 'error';
   formSubmitted = false;
 
+  isSubmitting = false; 
+
   private validOperatingSystems = [
     'Windows 11',
     'Windows 10',
@@ -71,6 +73,7 @@ export class CreateNew implements OnInit, OnDestroy {
     this.errorModalMessage = '';
     this.modalType = 'error';
     this.formSubmitted = false;
+    this.isSubmitting = false;
     this.cdr.detectChanges();
 
     this.laptopForm.reset({
@@ -125,12 +128,18 @@ export class CreateNew implements OnInit, OnDestroy {
   }
 
   onSubmit() {
+    if (this.isSubmitting) {
+      return;
+    }
+
     this.formSubmitted = true;
 
     if (!this.laptopForm.valid) {
       this.showError('Моля, попълнете всички задължителни полета!');
       return;
     }
+
+    this.isSubmitting = true;
 
     const formValue = this.laptopForm.value;
 
@@ -169,15 +178,18 @@ export class CreateNew implements OnInit, OnDestroy {
 
     this.laptopService.create(laptopData).subscribe({
       next: (response) => {
+        this.isSubmitting = false;
         if (response.error) {
           this.showError(response.error.message || 'Грешка при създаване на обява', 'error');
         } else if (response.data) {
           this.showError('Обявата беше създадена успешно!', 'success');
+          this.router.navigate(['/laptops'])
         } else {
           this.showError('Нещо се обърка, опитай пак', 'error');
         }
       },
       error: (err) => {
+        this.isSubmitting = false;
         this.showError(`Възникна грешка: ${err.message || err}`, 'error');
       },
     });
@@ -194,9 +206,5 @@ export class CreateNew implements OnInit, OnDestroy {
     this.showErrorModal = false;
     this.errorModalMessage = '';
     this.cdr.detectChanges();
-
-    // if (this.modalType === 'success') {
-    //   this.router.navigate(['/laptops']);
-    // }
   }
 }

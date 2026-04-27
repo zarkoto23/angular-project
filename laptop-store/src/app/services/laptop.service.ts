@@ -11,9 +11,9 @@ export class LaptopService {
   private supabaseService = inject(SupabaseService);
   private supabase = this.supabaseService.getSupabaseClient();
 
-  getAll(): Observable<{ data: Laptop[] | null; error: any }> {
-    return from(this.supabase.from('laptops').select('*'));
-  }
+ getAll(): Observable<{ data: Laptop[] | null; error: any }> {
+    return from(this.supabase.from('laptops').select('*').order('created_at', { ascending: false }));
+}
 
   getOne(id: string): Observable<{ data: Laptop | null; error: any }> {
     return from(this.supabase.from('laptops').select('*').eq('id', id).single());
@@ -65,69 +65,92 @@ export class LaptopService {
     return from(this.supabase.from('laptops').delete().eq('id', id).eq('owner_id', currentUser.id));
   }
 
-  addToCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
-    const currentUser = this.supabaseService.getCurrentUserValue();
+// laptop.service.ts - оправен addToCart
+// laptop.service.ts - оправен addToCart
+addToCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
+  const currentUser = this.supabaseService.getCurrentUserValue();
 
-    if (!currentUser) {
-      return of({
-        data: null,
-        error: { message: 'Трябва да сте логнати за да добавяте в количка' },
-      });
-    }
-
-    return from(this.supabase.from('laptops').select('data').eq('id', laptopId).single()).pipe(
-      switchMap((response) => {
-        if (response.error) {
-          return of({ data: null, error: response.error });
-        }
-
-        const currentCart = response.data?.data?.inCartIn || [];
-
-        if (currentCart.includes(currentUser.id)) {
-          return of({ data: null, error: { message: 'Лаптопът вече е в количката' } });
-        }
-
-        const newCart = [...currentCart, currentUser.id];
-
-        return from(
-          this.supabase
-            .from('laptops')
-            .update({ data: { ...response.data.data, inCartIn: newCart } })
-            .eq('id', laptopId)
-            .select()
-            .single(),
-        );
-      }),
-    );
+  if (!currentUser) {
+    return of({
+      data: null,
+      error: { message: 'Трябва да сте логнати за да добавяте в количка' },
+    });
   }
 
-  removeFromCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
-    const currentUser = this.supabaseService.getCurrentUserValue();
+  return from(this.supabase.from('laptops').select('*').eq('id', laptopId).single()).pipe(
+    switchMap((response) => {
+      if (response.error) {
+        return of({ data: null, error: response.error });
+      }
 
-    if (!currentUser) {
-      return of({ data: null, error: { message: 'Трябва да сте логнати' } });
-    }
+      const laptop = response.data as Laptop;
+      const currentCart = laptop.data.in_cart_to || [];
+      
+      // Ако вече е в количката, просто връщаме успех без промяна
+      if (currentCart.includes(currentUser.id)) {
+        return of({ data: laptop, error: null });
+      }
 
-    return from(this.supabase.from('laptops').select('data').eq('id', laptopId).single()).pipe(
-      switchMap((response) => {
-        if (response.error) {
-          return of({ data: null, error: response.error });
-        }
+      const newCart = [...currentCart, currentUser.id];
+      const updatedData = { ...laptop.data, in_cart_to: newCart };
 
-        const currentCart = response.data?.data?.inCartIn || [];
-        const newCart = currentCart.filter((id: string) => id !== currentUser.id);
+      return from(
+        this.supabase
+          .from('laptops')
+          .update({ data: updatedData })
+          .eq('id', laptopId)
+          .select()
+          .single()
+      ).pipe(
+        map((updateResponse) => {
+          if (updateResponse.error) {
+            return { data: null, error: updateResponse.error };
+          }
+          return { data: updateResponse.data as Laptop, error: null };
+        })
+      );
+    }),
+  );
+}
+ // laptop.service.ts - оправен removeFromCart
+removeFromCart(laptopId: string): Observable<{ data: Laptop | null; error: any }> {
+  const currentUser = this.supabaseService.getCurrentUserValue();
 
-        return from(
-          this.supabase
-            .from('laptops')
-            .update({ data: { ...response.data.data, inCartIn: newCart } })
-            .eq('id', laptopId)
-            .select()
-            .single(),
-        );
-      }),
-    );
+  if (!currentUser) {
+    return of({ data: null, error: { message: 'Трябва да сте логнати' } });
   }
+
+  return from(this.supabase.from('laptops').select('*').eq('id', laptopId).single()).pipe(
+    switchMap((response) => {
+      if (response.error) {
+        return of({ data: null, error: response.error });
+      }
+
+      const laptop = response.data as Laptop;
+      const currentCart = laptop.data.in_cart_to || [];
+      const newCart = currentCart.filter((id: string) => id !== currentUser.id);
+
+      const updatedData = { ...laptop.data, in_cart_to: newCart };
+
+      return from(
+        this.supabase
+          .from('laptops')
+          .update({ data: updatedData })
+          .eq('id', laptopId)
+          .select()
+          .single()
+      ).pipe(
+        map((updateResponse) => {
+          if (updateResponse.error) {
+            return { data: null, error: updateResponse.error };
+          }
+          return { data: updateResponse.data as Laptop, error: null };
+        })
+      );
+    }),
+  );
+}
+  // laptop.service.ts
 
   getUserCart(): Observable<{ data: Laptop[] | null; error: any }> {
   const currentUser = this.supabaseService.getCurrentUserValue();
@@ -156,7 +179,7 @@ export class LaptopService {
   getLatestProducts(limit: number = 5): Observable<Laptop[]> {
     return from(
       this.supabase
-        .from('laptops') // <- името на вашата таблица
+        .from('laptops')
         .select('*')
         .order('created_at', { ascending: false })
         .limit(limit),
@@ -174,4 +197,24 @@ export class LaptopService {
       }),
     );
   }
+
+  // laptop.service.ts - добави този метод
+
+isLaptopInCart(laptopId: string): Observable<boolean> {
+  const currentUser = this.supabaseService.getCurrentUserValue();
+  
+  if (!currentUser) {
+    return of(false);
+  }
+  
+  return this.getOne(laptopId).pipe(
+    map(response => {
+      const laptop = response.data;
+      // Използвай правилното име на полето - в твоя случай 'inCartIn'
+      return laptop?.data?.in_cart_to?.includes(currentUser.id) || false;
+    })
+  );
+}
+
+
 }

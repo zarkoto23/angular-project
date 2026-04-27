@@ -1,22 +1,18 @@
-<!-- components/shared/details-cart/details-cart.html -->
+<!-- details-cart.html -->
 @let laptop = laptop$ | async;
 
 <div class="details-container">
     <div class="container">
-        <!-- Back button -->
         <div class="back-button">
             <a routerLink="/laptops" class="btn-back">← Назад към всички лаптопи</a>
         </div>
 
-        <!-- Product Details -->
         @if (laptop) {
         <div class="product-details">
-            <!-- Product Image -->
             <div class="product-image">
                 <img [src]="laptop.data.image_url" [alt]="laptop.data.brand + ' ' + laptop.data.model">
             </div>
 
-            <!-- Product Info -->
             <div class="product-info">
                 <div class="product-header">
                     <h1>{{ laptop.data.brand }} {{ laptop.data.model }}</h1>
@@ -56,7 +52,6 @@
                     </div>
                 </div>
 
-                <!-- Description -->
                 @if (laptop.data.description) {
                 <div class="product-description">
                     <h3>Описание</h3>
@@ -64,22 +59,31 @@
                 </div>
                 }
 
-                <!-- Action Buttons -->
                 <div class="product-actions">
-                    <!-- Само ако е собственик показва редакция и изтриване -->
                     @if (currentUserId === laptop.owner_id) {
                     <button class="btn-edit" (click)="editLaptop(laptop.id)">
-                        <span>✏️</span> Редактирай
+                        Редактирай
                     </button>
                     <button class="btn-delete" (click)="deleteLaptop(laptop.id)">
-                        <span>🗑️</span> Изтрий
+                        Изтрий
                     </button>
                     }
-                    <!-- Само ако НЕ е собственик показва добавяне в количка -->
-                    @if (currentUserId !== laptop.owner_id) {
-                    <button class="btn-cart" (click)="addToCart(laptop.id)">
-                        <span>🛒</span> Добави в количка
-                    </button>
+                    
+                    @if (currentUserId && currentUserId !== laptop.owner_id) {
+                        @if ((isInCart$ | async) === true) {
+                            <div class="cart-actions">
+                                <button class="btn-in-cart" disabled>
+                                    ✓ В количката
+                                </button>
+                                <button class="btn-remove" (click)="removeFromCart(laptop.id)">
+                                    Премахни
+                                </button>
+                            </div>
+                        } @else {
+                            <button class="btn-cart" (click)="addToCart(laptop.id)">
+                                Добави в количка
+                            </button>
+                        }
                     }
                 </div>
             </div>

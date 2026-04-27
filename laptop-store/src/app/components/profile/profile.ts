@@ -1,5 +1,5 @@
 // components/profile/profile.ts
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, signal, WritableSignal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Subscription, map, Observable, combineLatest } from 'rxjs';
 import { LaptopService } from '../../services/laptop.service';
@@ -15,8 +15,8 @@ import { ProductCard } from '../home/products/product-card/product-card';
   styleUrls: ['./profile.css']
 })
 export class Profile implements OnInit {
-  myLaptops$: Observable<Laptop[]> = new Observable();
-  cartLaptops$: Observable<Laptop[]> = new Observable();
+  myLaptops: WritableSignal<Laptop[]> = signal([]);
+  cartLaptops: WritableSignal<Laptop[]> = signal([]);
   currentUser: any = null;
 
   constructor(
@@ -28,26 +28,19 @@ export class Profile implements OnInit {
     this.currentUser = this.supabaseService.getCurrentUserValue();
     
     if (this.currentUser) {
-      const allLaptops$ = this.laptopService.getAll().pipe(
+      this.laptopService.getAll().pipe(
         map(response => response.data || [])
-      );
-      
-      this.myLaptops$ = allLaptops$.pipe(
-        map(laptops => laptops.filter(l => l.owner_id === this.currentUser.id))
-      );
-      
-      this.cartLaptops$ = allLaptops$.pipe(
-        map(laptops => laptops.filter(l => l.data?.in_cart_to?.includes(this.currentUser.id)))
-      );
+      ).subscribe(allLaptops => {
+        this.myLaptops.set(allLaptops.filter(l => l.owner_id === this.currentUser.id));
+        this.cartLaptops.set(allLaptops.filter(l => l.data?.in_cart_to?.includes(this.currentUser.id)));
+      });
     }
   }
 
   removeFromCart(laptopId: string): void {
     this.laptopService.removeFromCart(laptopId).subscribe({
       next: () => {
-        this.cartLaptops$ = this.cartLaptops$.pipe(
-          map(laptops => laptops.filter(l => l.id !== laptopId))
-        );
+        this.cartLaptops.update(laptops => laptops.filter(l => l.id !== laptopId));
       },
       error: (error) => {
         console.error('Грешка при премахване от количка:', error);
@@ -59,14 +52,17 @@ export class Profile implements OnInit {
     if (confirm('Сигурни ли сте, че искате да изтриете този лаптоп?')) {
       this.laptopService.delete(laptopId).subscribe({
         next: () => {
-          this.myLaptops$ = this.myLaptops$.pipe(
-            map(laptops => laptops.filter(l => l.id !== laptopId))
-          );
+          this.myLaptops.update(laptops => laptops.filter(l => l.id !== laptopId));
         },
         error: (error) => {
           console.error('Грешка при изтриване:', error);
         }
       });
     }
+  }
+
+  editLaptop(laptopId: string): void {
+    // TODO: Навигация към edit страница
+    console.log('Редактирай лаптоп:', laptopId);
   }
 }
