@@ -50,6 +50,20 @@ ng serve
 - Error handling (modal feedback)
 - Lazy loading
 
+## Routing Structure
+
+| Route             | Component              | Guard 
+|-------------------|----------------------- |-------
+| `/home`           | HomeComponent          | Public 
+| `/laptops`    | AllLaptopsComponent    | Public 
+| `/create`     | AddLaptopComponent     | AuthGuard 
+| `/profile`        | ProfileComponent       | AuthGuard 
+| `/login`          | LoginComponent         | GuestGuard
+| `/register`       | RegisterComponent      | GuestGuard
+| `/laptops/:id`     | LaptopDetailsComponent | Public
+| `/profile/:userId`| ProfileComponent	      | AuthGuard
+| `/edit/:id`| EditLaptopComponent	   | AuthGuard, OwnerGuard
+
 
 
 
@@ -95,21 +109,7 @@ The application is an online laptop store where users can browse laptops, regist
 
 - **Error handling:** Network errors, invalid input, and empty states are handled gracefully with user-friendly messages.
 
-## Routing Structure
 
-| Route             | Component              | Guard 
-|-------------------|----------------------- |-------
-| `/home`           | HomeComponent          | Public 
-| `/all-laptops`    | AllLaptopsComponent    | Public 
-| `/add-laptop`     | AddLaptopComponent     | AuthGuard 
-| `/profile`        | ProfileComponent       | AuthGuard 
-| `/login`          | LoginComponent         | GuestGuard
-| `/register`       | RegisterComponent      | GuestGuard
-| `/laptop/:id`     | LaptopDetailsComponent | Public
-| `/profile/:userId`| ProfileComponent	      | AuthGuard
-| `/edit-laptop/:id`| EditLaptopComponent	   | AuthGuard, OwnerGuard
-
-**Route parameters example:** `/laptop/123` – fetches laptop with ID 123
 
 ## How the user interacts with the system
 
