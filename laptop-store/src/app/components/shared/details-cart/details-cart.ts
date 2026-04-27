@@ -21,6 +21,8 @@ export class DetailsCart {
   private isAddingToCart = false;
   private isRemovingFromCart = false;
 
+  isDescriptionExpanded = false;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
@@ -32,7 +34,11 @@ export class DetailsCart {
     this.laptop$ = this.route.paramMap.pipe(
       switchMap((params) => {
         const id = params.get('id');
-        return this.laptopService.getOne(id!).pipe(map((response) => response.data));
+        if (!id) {
+          this.router.navigate(['/laptops']);
+          return of(null);
+        }
+        return this.laptopService.getOne(id).pipe(map((response) => response.data));
       }),
     );
 
@@ -53,12 +59,14 @@ export class DetailsCart {
   }
 
   editLaptop(laptopId: string | undefined): void {
+    if (!laptopId) return;
     this.router.navigate(['/edit', laptopId]);
   }
 
   deleteLaptop(laptopId: string | undefined): void {
+    if (!laptopId) return;
     if (confirm('Сигурни ли сте, че искате да изтриете този лаптоп?')) {
-      this.laptopService.delete(laptopId!).subscribe({
+      this.laptopService.delete(laptopId).subscribe({
         next: () => {
           this.router.navigate(['/laptops']);
         },
@@ -67,12 +75,10 @@ export class DetailsCart {
   }
 
   addToCart(laptopId: string | undefined): void {
-    if (this.isAddingToCart) {
-      return;
-    }
+    if (!laptopId || this.isAddingToCart) return;
 
     this.isAddingToCart = true;
-    this.laptopService.addToCart(laptopId!).subscribe({
+    this.laptopService.addToCart(laptopId).subscribe({
       next: () => {
         this.refreshTrigger$.next();
         this.isAddingToCart = false;
@@ -84,12 +90,10 @@ export class DetailsCart {
   }
 
   removeFromCart(laptopId: string | undefined): void {
-    if (this.isRemovingFromCart) {
-      return;
-    }
+    if (!laptopId || this.isRemovingFromCart) return;
 
     this.isRemovingFromCart = true;
-    this.laptopService.removeFromCart(laptopId!).subscribe({
+    this.laptopService.removeFromCart(laptopId).subscribe({
       next: () => {
         this.refreshTrigger$.next();
         this.isRemovingFromCart = false;
@@ -98,5 +102,28 @@ export class DetailsCart {
         this.isRemovingFromCart = false;
       },
     });
+  }
+
+  toggleDescription(): void {
+    this.isDescriptionExpanded = !this.isDescriptionExpanded;
+  }
+
+  getDisplayedDescription(description: string | undefined): string {
+    if (!description) return '';
+
+    const maxLength = 150;
+    if (this.isDescriptionExpanded || description.length <= maxLength) {
+      return description;
+    }
+
+    return description.substring(0, maxLength) + '...';
+  }
+
+  shouldShowReadMore(description: string | undefined): boolean {
+    return !!description && description.length > 150 && !this.isDescriptionExpanded;
+  }
+
+  shouldShowReadLess(description: string | undefined): boolean {
+    return this.isDescriptionExpanded && !!description && description.length > 150;
   }
 }

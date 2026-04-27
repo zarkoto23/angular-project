@@ -1,5 +1,10 @@
 import { Injectable } from '@angular/core';
-import { createClient, SupabaseClient, User as SupabaseUser } from '@supabase/supabase-js';
+import {
+  AuthSession,
+  createClient,
+  SupabaseClient,
+  User as SupabaseUser,
+} from '@supabase/supabase-js';
 import { Observable, from, of, BehaviorSubject } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { User } from '../models/user.model';
@@ -25,7 +30,7 @@ export class SupabaseService {
       } else {
         this.currentUserSubject.next(null);
       }
-      
+
       this.isInitialized.next(true);
     });
 
@@ -43,7 +48,7 @@ export class SupabaseService {
     if (!supabaseUser) {
       return null;
     }
-    
+
     return {
       id: supabaseUser.id,
       email: supabaseUser.email ?? '',
@@ -99,7 +104,7 @@ export class SupabaseService {
       }),
       catchError((err) => {
         return of(void 0);
-      })
+      }),
     );
   }
 
@@ -109,5 +114,16 @@ export class SupabaseService {
 
   getSupabaseClient(): SupabaseClient {
     return this.supabase;
+  }
+
+  async getSession(): Promise<AuthSession | null> {
+    const {
+      data: { session },
+      error,
+    } = await this.supabase.auth.getSession();
+    if (error) {
+      return null;
+    }
+    return session;
   }
 }

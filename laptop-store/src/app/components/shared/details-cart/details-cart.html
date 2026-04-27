@@ -54,7 +54,21 @@
                 @if (laptop.data.description) {
                 <div class="product-description">
                     <h3>Описание</h3>
-                    <p>{{ laptop.data.description }}</p>
+                    <div class="description-wrapper">
+                        <p id="p-description" class="description-text" [class.expanded]="isDescriptionExpanded">
+                            {{ getDisplayedDescription(laptop.data.description) }}
+                        </p>
+                        @if (shouldShowReadMore(laptop.data.description)) {
+                        <span class="read-more-trigger" (click)="toggleDescription()">
+                            ...<span class="read-more-text">read more</span>
+                        </span>
+                        }
+                        @if (isDescriptionExpanded) {
+                        <span class="read-less-trigger" (click)="toggleDescription()">
+                            <span class="read-less-text"> show less</span>
+                        </span>
+                        }
+                    </div>
                 </div>
                 }
 
